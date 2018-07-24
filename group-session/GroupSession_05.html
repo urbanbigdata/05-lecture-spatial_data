@@ -144,7 +144,7 @@ $(document).ready(function () {
 <h2>Instruction</h2>
 <div id="synopsis" class="section level3">
 <h3>1. Synopsis</h3>
-<p>The purpose of this group session is to get you familiar with <strong>data joining</strong> and <strong>spatial data</strong>. There are three steps in this group session. Firs, you will use the coordiante data (latitude and longitude) to do some cool mapping with Exploratory. To do that, you will filter the data and create a heatmap of crime activities.</p>
+<p>The purpose of this group session is to get you familiar with <strong>data joining</strong> and <strong>spatial data</strong>. There are three steps in this group session. First, you will use the coordinate data (latitude and longitude) to do some cool mapping with Exploratory. To do that, you will filter the data and create a heatmap of crime activities.</p>
 <p>Second, you will join the Seattle Census data to the crime data using the common field named <code>tract</code>. Then you will explore the data using the <code>Viz</code> tool in Exploratory.</p>
 <p>Third, you will load the Census tract geojson file and and map other demographic data from the Census.</p>
 <p><br></p>
@@ -152,7 +152,10 @@ $(document).ready(function () {
 <div id="initial-preparation" class="section level3">
 <h3>2. Initial preparation</h3>
 <p>First, open Exploratory and import the Seattle crime data only for the year 2016 using the following code.</p>
-<pre class="r"><code># Define database path
+<pre class="r"><code>library(&quot;RSQLite&quot;)
+library(&quot;DBI&quot;)
+
+# Define database path
 filename = &quot;/Users/[user name]/Documents/vsp_bigdata/group_session/04-lecture/seattle_crime_data.db&quot;
 #filename = &quot;C://Users//[user name]//Documents//vsp_bigdata//group_session//04-lecture//seattle_crime_data.db&quot;
 
@@ -166,7 +169,7 @@ my_data = dbGetQuery(con, &quot;SELECT Year, Month, SummarizedOffenseDescription
 <p><br></p>
 <p>Now create a new column named <code>tract</code> using <code>mutate</code> and the the following calculation.</p>
 <pre class="r"><code>as.numeric(gsub(&quot;\\..*&quot;, &quot;&quot;, CensusTract2000))</code></pre>
-<p>This calculation extracts only the tract number from the data. <br> <strong>Further information for advanced students</strong>: the <code>gsub</code> function uses regular expression to filter and replace characters. In this case the regular expression finds all the characters that go after . and replace them with a blank character. For example, 6200.1043 becomes 6200<br>. You can read more about this function here: <a href="http://stat.ethz.ch/R-manual/R-devel/library/base/html/grep.html" class="uri">http://stat.ethz.ch/R-manual/R-devel/library/base/html/grep.html</a></p>
+<p>This calculation extracts only the tract number from the data. <br> <strong>Further information for advanced students</strong>: the <code>gsub</code> function uses regular expression to filter and replace characters. In this case the regular expression finds all the characters that go after . and replace them with a blank character. For example, 6200.1043 becomes 6200.<br> You can read more about this function here: <a href="http://stat.ethz.ch/R-manual/R-devel/library/base/html/grep.html" class="uri">http://stat.ethz.ch/R-manual/R-devel/library/base/html/grep.html</a></p>
 <p><br></p>
 </div>
 <div id="first-part---mapping-crime-activities-using-points-data" class="section level3">
