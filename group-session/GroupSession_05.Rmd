@@ -1,0 +1,135 @@
+---
+title: "Urban Big Data Analytics - Lecture 5 Group Session: Spatial data"
+author: "Andy Hong"
+date: "July 23, 2019"
+output:
+  html_document:
+    css: my_styles.css
+  pdf_document: default
+  word_document: default
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+<br>
+
+## Prerequisites
+
+Please locate your `vsp_bigdata` folder under "My Documents" and navigate to `group-session`. Create `05-lecture` folder under the `group-session` folder.
+
+1. For this group session, we will use the Seattle crime database we loaded yesterday. <br>
+If you have completed the tasks yesterday, you will have the Seattle crime data ready to be loaded into the Exploratory. <br> 
+If you don't have the Seattle crime database, you will need to download this CSV file separately and load it into Exploratory: <a href="http://urbanbigdata.github.io/05-lecture-spatial_data/group-session/seattle_crime_2013.csv" download> Seattle crime data 2013 </a><br>
+
+3. Now, you need to download the US census data to add demographic information: <a href="http://urbanbigdata.github.io/05-lecture-spatial_data/group-session/seattle_census_2013.csv" download> Seattle Census ACS data 2013 </a><br>
+
+4. Lastly, you need to download the US census tract GeoJSON file for mapping: <a href="http://urbanbigdata.github.io/05-lecture-spatial_data/group-session/seattle_tract.geojson" download> Seattle tract GeoJSON data </a><br><br>
+
+
+## Instruction
+
+### 1. Synopsis
+The purpose of this group session is to get you familiar with **data joining** and **spatial data**. There are three steps in this group session. First, you will use the coordinate data (latitude and longitude) to do some cool mapping with Exploratory. To do that, you will filter the data and create a heatmap of crime activities.  
+
+Second, you will join the Seattle Census data to the crime data using the common field named `tract`. Then you will explore the data using the `Viz` tool in Exploratory.
+
+Third, you will load the Census tract geojson file and and map other demographic data from the Census. 
+
+<br>
+
+### 2. Initial preparation
+
+First, open Exploratory and import the Seattle crime data only for the year 2013 using the following code.
+
+```{r, eval=F}
+library("RSQLite")
+library("DBI")
+
+# Define database path
+filename = "/Users/[user name]/Documents/vsp_bigdata/group_session/04-lecture/seattle_crime_data.db"
+#filename = "C://Users//[user name]//Documents//vsp_bigdata//group_session//04-lecture//seattle_crime_data.db"
+
+# Connect to db
+con = dbConnect(drv=RSQLite::SQLite(), dbname=filename)
+
+# Issue a query to read the data
+# my_data = dbGetQuery(con, "SELECT * FROM crime")
+
+my_data = dbGetQuery(con, "SELECT Year, Month, SummarizedOffenseDescription, DateReported, DistrictSector, Latitude, Longitude, CensusTract2000 FROM crime WHERE Year = 2013")
+
+```
+
+<br>
+
+Now create a new column named `tract` using `mutate` and the the following calculation.
+```{r, eval=F}
+
+as.numeric(gsub("\\..*", "", CensusTract2000))
+
+```
+
+This calculation extracts only the tract number from the data. <br>
+**Further information for advanced students**: the `gsub` function uses regular expression to filter and replace characters. In this case the regular expression finds all the characters that go after . and replace them with a blank character. For example, 6200.1043 becomes 6200.<br> You can read more about this function here: http://stat.ethz.ch/R-manual/R-devel/library/base/html/grep.html
+
+<br>
+
+### 3. First part - Mapping crime activities using points data
+
+Now, we are going to map crime activities. Go to `Viz` and choose `Map - Long/Lat` for the type. Exploratory will automatically populate the Longitude and Latitude, but if it doesn't, choose `Longitude` for Longitude and `Latitude` for Latitude. There are too many criminal activities in one year, so we will need to filter it first. <br>
+
+Click `+` and select `Filter`. For the column, choose `SummarizedOffenseDescription` and leave the operator as ` equal to` and select `BIKE THEFT` for the value. You can see that the downtown and the university areas have a lot of bike theft incidents.<br> 
+
+Now, let's create a heatmap. Click `+` on your Viz, and Choose `Map - Heatmap`. It automatically creates the heatmap of bike theft. We can clearly see that the bike thefts are concentrated around the downtown and the university areas. <br><br>
+
+
+### 4. Second part - Data joining and exploration
+
+For data exploration, we will need to group the data by `census tract`. Go back to one step before we filtered the data for Bike Theft. Click `+` and choose `Group_by` and choose `tract`. `Group_by` is not going to do anything unless we summarize the data. Let's summarise the data and get the total number of crime by census tract. We can do this by clicking `+` and choose `Summarize` and choose `# Number of rows` for the Column, and give the New column name as `total_crime`. <br>
+
+Next, we will join the Seattle census data to add demographic information to the crime data. Add File Data by using the `+` sign and select `seattle_census_2013.csv` file we downloaded earlier. <br>
+
+Now, go back to the Seattle crime data, and click `+` and select `Join`.<br><br>
+In the target data frame, choose `seattle_census_2013` and for both the Current Column and Target Column, choose `tract`. We can see that Census data are joined to the Seattle crime data. <br>
+
+Once we joined the data by census tract, we can go to `Viz` and choose `Scatter` for the type. On X Axis, choose `pop_den` and for Y Axis, choose `total_crime`. We can see the relationship between population density and total crime. <br>
+
+We can make the plot fancier by adding a trend line. Click the accordian-style menu next the Y Axis, and click `Trend Line` and choose `Linear Regression` for the type. It shows a beautiful scatter plot with a trend line showing the relationship between population density and crime.
+
+<br>
+
+
+### 5. Third part - Mapping demogrphic characteristics using polygon data
+
+Now that we joined the Census data, we can map our data by census tract. Click `+` on your Viz, and choose `Map - Area` for the type. On the `Area Type`, click the `Setup` button. Click `Add New` and `Add from Local`. From your group session folder, choose `seattle_tract.geojson` file. Close the dialog. <br>
+
+For the Area Type, now we can see that there is `seattle_tract` on the select menu. Choose `seattle_tract`. For the Key Property, scroll all the way down, and choose `tract`. For the Key Column, choose `tract`. Now we can choose any columns in the Color By to show their patterns on the map. For example, choose `total_crime`.
+<br><br>
+
+
+## Publish your data and codes
+
+Once your group session is completed, please publish your data and codes using the following steps.<br>
+
+1. Click the publish button as shown below:<br>
+<img src="http://urbanbigdata.github.io/04-lecture-database/group-session/images/step1.png" width="700px" style="border:1px solid #000000"><br><br><br>
+
+2. Write your title and select options as shown below:<br>
+<img src="http://urbanbigdata.github.io/04-lecture-database/group-session/images/step2.png" width="600px" style="border:1px solid #000000"><br><br>
+
+3. Please send the published URL to the course email (urbanbigdata2019@gmail.com). 
+ + <font color="red"><b>[IMPORTANT]</b></font> Please use the following email title format: <br>
+ `VSP BigData [lecture number] - [group number] - [presenter name]` <br>
+ ex), `VSP BigData Lecture 5 - Group 1 - Bill Gates` <br>
+ 
+<br><br><br>
+ 
+
+ 
+
+
+
+
