@@ -35,7 +35,7 @@ If you don't have the Seattle crime database, you will need to download this CSV
 ### 1. Synopsis
 The purpose of this group session is to get you familiar with **data joining** and **spatial data**. There are three steps in this group session. First, you will use the coordinate data (latitude and longitude) to do some cool mapping with Exploratory. To do that, you will filter the data and create a heatmap of crime activities.  
 
-Second, you will join the Seattle Census data to the crime data using the common field named `tract`. Then you will explore the data using the `Viz` tool in Exploratory.
+Second, you will join the Seattle Census data to the crime data using the common field named `tract`. Then you will explore the data using the `Chart` tool in Exploratory.
 
 Third, you will load the Census tract geojson file and and map other demographic data from the Census. 
 
@@ -79,11 +79,28 @@ This calculation extracts only the tract number from the data. <br>
 
 ### 3. First part - Mapping crime activities using points data
 
-Now, we are going to map crime activities. Go to `Viz` and choose `Map - Long/Lat` for the type. Exploratory will automatically populate the Longitude and Latitude, but if it doesn't, choose `Longitude` for Longitude and `Latitude` for Latitude. There are too many criminal activities in one year, so we will need to filter it first. <br>
+Now, we are going to map crime activities. Go to `Chart` and choose `Map - Long/Lat` for the type. Exploratory will automatically populate the Longitude and Latitude, but if it doesn't, choose `Longitude` for Longitude and `Latitude` for Latitude. 
+
+You will notice that some coodinates are erronous, so we will need to restrict our data only within the Seattle area using the bounding box as shown below. The correct range of latitude is 47.484 ~ 47.767, and longitude is -122.446 ~ -122.183.
+
+<img src="http://urbanbigdata.github.io/05-lecture-spatial_data/group-session/images/bounding_box.png" height="700px">
+
+For latitude, click `+` and select `Filter`. Choose column `Latitude` and the opeator `between` to data between 47.484 and 47.767.
+For longitude, click `+` and select `Filter`. Choose column `Latitude` and the opeator `between` to data between -122.446 and -122.183.
+
+Or you can add a custom filter, and copy and paste the following code.
+
+```{r, eval=F}
+
+filter(between(Latitude, 47.484, 47.767) & between(Longitude, -122.446, -122.183))
+
+```
+
+There are too many criminal activities in one year, so we will need to filter for one type of crime. <br>
 
 Click `+` and select `Filter`. For the column, choose `SummarizedOffenseDescription` and leave the operator as ` equal to` and select `BIKE THEFT` for the value. You can see that the downtown and the university areas have a lot of bike theft incidents.<br> 
 
-Now, let's create a heatmap. Click `+` on your Viz, and Choose `Map - Heatmap`. It automatically creates the heatmap of bike theft. We can clearly see that the bike thefts are concentrated around the downtown and the university areas. <br><br>
+Now, let's create a heatmap. Click `+` on your Chart, and Choose `Map - Heatmap`. It automatically creates the heatmap of bike theft. We can clearly see that the bike thefts are concentrated around the downtown and the university areas. <br><br>
 
 
 ### 4. Second part - Data joining and exploration
@@ -95,7 +112,7 @@ Next, we will join the Seattle census data to add demographic information to the
 Now, go back to the Seattle crime data, and click `+` and select `Join`.<br><br>
 In the target data frame, choose `seattle_census_2013` and for both the Current Column and Target Column, choose `tract`. We can see that Census data are joined to the Seattle crime data. <br>
 
-Once we joined the data by census tract, we can go to `Viz` and choose `Scatter` for the type. On X Axis, choose `pop_den` and for Y Axis, choose `total_crime`. We can see the relationship between population density and total crime. <br>
+Once we joined the data by census tract, we can go to `Chart` and choose `Scatter` for the type. On X Axis, choose `pop_den` and for Y Axis, choose `total_crime`. We can see the relationship between population density and total crime. <br>
 
 We can make the plot fancier by adding a trend line. Click the accordian-style menu next the Y Axis, and click `Trend Line` and choose `Linear Regression` for the type. It shows a beautiful scatter plot with a trend line showing the relationship between population density and crime.
 
@@ -104,7 +121,7 @@ We can make the plot fancier by adding a trend line. Click the accordian-style m
 
 ### 5. Third part - Mapping demogrphic characteristics using polygon data
 
-Now that we joined the Census data, we can map our data by census tract. Click `+` on your Viz, and choose `Map - Area` for the type. On the `Area Type`, click the `Setup` button. Click `Add New` and `Add from Local`. From your group session folder, choose `seattle_tract.geojson` file. Close the dialog. <br>
+Now that we joined the Census data, we can map our data by census tract. Click `+` on your Chart, and choose `Map - Area` for the type. On the `Area Type`, click the `Setup` button. Click `Add New` and `Add from Local`. From your group session folder, choose `seattle_tract.geojson` file. Close the dialog. <br>
 
 For the Area Type, now we can see that there is `seattle_tract` on the select menu. Choose `seattle_tract`. For the Key Property, scroll all the way down, and choose `tract`. For the Key Column, choose `tract`. Now we can choose any columns in the Color By to show their patterns on the map. For example, choose `total_crime`.
 <br><br>
