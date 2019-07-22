@@ -83,10 +83,10 @@ Now, we are going to map crime activities. Go to `Chart` and choose `Map - Long/
 
 You will notice that some coodinates are erronous, so we will need to restrict our data only within the Seattle area using the bounding box as shown below. The correct range of latitude is 47.484 ~ 47.767, and longitude is -122.446 ~ -122.183.
 
-<img src="http://urbanbigdata.github.io/05-lecture-spatial_data/group-session/images/bounding_box.png" height="700px">
+<img src="http://urbanbigdata.github.io/05-lecture-spatial_data/group-session/bounding_box.png" width="400px"">
 
-For latitude, click `+` and select `Filter`. Choose column `Latitude` and the opeator `between` to data between 47.484 and 47.767.
-For longitude, click `+` and select `Filter`. Choose column `Latitude` and the opeator `between` to data between -122.446 and -122.183.
+For latitude, click `+` and select `Filter`. Choose column `Latitude` and the opeator `between` to filter data between 47.484 and 47.767.
+For longitude, click `+` and select `Filter`. Choose column `Latitude` and the opeator `between` to filter data between -122.446 and -122.183.
 
 Or you can add a custom filter, and copy and paste the following code.
 
@@ -109,7 +109,10 @@ For data exploration, we will need to group the data by `census tract`. Go back 
 
 Next, we will join the Seattle census data to add demographic information to the crime data. Add File Data by using the `+` sign and select `seattle_census_2013.csv` file we downloaded earlier. <br>
 
-Now, go back to the Seattle crime data, and click `+` and select `Join`.<br><br>
+Now, go back to the Seattle crime data. We will join the crime data and the census data. But before we do the join, plesae review these three dffierent types of data join.<br>
+<img src="https://urbanbigdata.github.io/05-lecture-spatial_data/images/joins.png" width="400px""><br>
+
+If you are comfortable with the concept of data join, click `+` and select `Join`.<br><br>
 In the target data frame, choose `seattle_census_2013` and for both the Current Column and Target Column, choose `tract`. We can see that Census data are joined to the Seattle crime data. <br>
 
 Once we joined the data by census tract, we can go to `Chart` and choose `Scatter` for the type. On X Axis, choose `pop_den` and for Y Axis, choose `total_crime`. We can see the relationship between population density and total crime. <br>
@@ -125,6 +128,12 @@ Now that we joined the Census data, we can map our data by census tract. Click `
 
 For the Area Type, now we can see that there is `seattle_tract` on the select menu. Choose `seattle_tract`. For the Key Property, scroll all the way down, and choose `tract`. For the Key Column, choose `tract`. Now we can choose any columns in the Color By to show their patterns on the map. For example, choose `total_crime`.
 <br><br>
+
+### 6. <font color="red">[Advanced material]</font> Thinking about numerators and denominators
+
+We used `total_crime` as a proxy for indicating the intensity of criminal activities in certain neighborhoods (i.e. census tract). Do you think this is an appropriate measure of criminal activity? How would you adjust for the number of people in the neighborhood? Add this extra step to calculate the new proxy variable, and compare your map using the `total_crime` variable vs. the map using this new variable.
+
+[Hint] Criminal activities in certain neighborhood will be porportional to the number of people living there, so population will be your denominator.  <br><br>
 
 
 ## Publish your data and codes
